@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Change Image Brightness</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <h1>Change Image Brightness</h1>
+    <form action="{{ url_for('brightness') }}" method="post" enctype="multipart/form-data">
+        <label for="file">Select image to upload:</label>
+        <input type="file" name="file" id="file" required><br><br>
+        <label for="brightness">Brightness level:</label>
+        <input type="number" name="brightness" id="brightness" min="-255" max="255" step="1" value="0" required><br><br>
+        <div class="g-recaptcha" data-sitekey="{{ sitekey }}"></div><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
