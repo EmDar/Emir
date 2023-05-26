@@ -10,21 +10,23 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB limit for uploaded files
 UPLOAD_FOLDER = './uploads'  # папка для загруженных файлов
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-RECAPTCHA_SITE_KEY = '6LfCtz8mAAAAAIlTKUtznvcESoJpRf3B_5qUIm6w'
+RECAPTCHA_SITE_KEY = '6Le0-T8mAAAAAA9mngaXEmUBPeX7uJQxdQ4LrFum'
 
-def change_brightness(image, brightness):
+def change_brightness(image, brightness, selected_channels):
     # Convert the image to numpy array
     img_array = np.array(image)
 
-    # Change the brightness of the image
-    modified_array = img_array + brightness
+    # Apply brightness adjustment to the selected channels
+    for channel in selected_channels:
+        img_array[..., channel] += brightness
 
     # Limit the pixel values to the range of 0-255
-    modified_array = np.clip(modified_array, 0, 255).astype(np.uint8)
+    img_array = np.clip(img_array, 0, 255).astype(np.uint8)
 
     # Create and return the modified image
-    modified_image = Image.fromarray(modified_array)
+    modified_image = Image.fromarray(img_array)
     return modified_image
+
 
 def get_color_distribution(img):
     colors = img.getcolors(img.size[0] * img.size[1])
@@ -83,7 +85,7 @@ def brightness():
     if not recaptcha_response:
         abort(400, 'reCAPTCHA verification failed')
     payload = {
-        'secret': '6LfCtz8mAAAAAJRJGntOgbegUff_IPBPa0TI9INw',
+        'secret': '6Le0-T8mAAAAAD-szrwap70ZmrcOQ2ORqc7VJYCH',
         'response': recaptcha_response
     }
     response = requests.post('https://www.google.com/recaptcha/api/siteverify', payload).json()
@@ -96,8 +98,17 @@ def brightness():
     # Get the brightness level from the request
     brightness_level = int(request.form.get('brightness'))
 
-    # Change the brightness of the image
-    modified_image = change_brightness(img, brightness_level)
+    # Get the selected color channels from checkboxes
+    selected_channels = []
+    if request.form.get('red_checkbox'):
+        selected_channels.append(0)  # Red channel
+    if request.form.get('green_checkbox'):
+        selected_channels.append(1)  # Green channel
+    if request.form.get('blue_checkbox'):
+        selected_channels.append(2)  # Blue channel
+
+    # Change the brightness of the image for the selected channels
+    modified_image = change_brightness(img, brightness_level, selected_channels)
     orig_image = img
 
     # Calculate color distributions of original and modified images
@@ -123,6 +134,7 @@ def brightness():
     return render_template('result.html', orig_colors=orig_colors, modified_colors=modified_colors, orig_image=orig_filename,
                            modified_image=modified_filename, plot_orig=plot_orig_filename,
                            plot_modified=plot_modified_filename)
+
 
 @app.route('/', methods=['GET'])
 def index():
