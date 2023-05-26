@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB limit for uploaded files
 UPLOAD_FOLDER = './uploads'  # папка для загруженных файлов
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-RECAPTCHA_SITE_KEY = '6Lcixj0mAAAAAJ0z-bvTKP7Y9zGHtu-nJW_Dlie3'
+RECAPTCHA_SITE_KEY = '6LegSj0mAAAAAEicO9JUNPKMPcjyC3tKYmWD--jr'
 
 def change_brightness(image, brightness):
     # Convert the image to numpy array
@@ -83,7 +83,7 @@ def brightness():
     if not recaptcha_response:
         abort(400, 'reCAPTCHA verification failed')
     payload = {
-        'secret': '6Lcixj0mAAAAAAnL0NGiqiOCiHZUWrjC2wABm52B',
+        'secret': '6LegSj0mAAAAAEgQM6hp__x-Qc5b_TVwLaR6KSgW',
         'response': recaptcha_response
     }
     response = requests.post('https://www.google.com/recaptcha/api/siteverify', payload).json()
@@ -98,12 +98,16 @@ def brightness():
 
     # Change the brightness of the image
     modified_image = change_brightness(img, brightness_level)
+    orig_image = img
 
     # Calculate color distributions of original and modified images
     orig_colors = get_color_distribution(img)
     modified_colors = get_color_distribution(modified_image)
 
     # Save the modified image to a file
+    orig_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'orig.png')
+    orig_image.save(orig_filename)
+
     modified_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'modified.png')
     modified_image.save(modified_filename)
 
@@ -116,7 +120,7 @@ def brightness():
     plot_color_distribution(modified_image, plot_modified_filename)
 
     # Render the result page
-    return render_template('result.html', orig_colors=orig_colors, modified_colors=modified_colors,
+    return render_template('result.html', orig_colors=orig_colors, modified_colors=modified_colors, orig_image=orig_filename,
                            modified_image=modified_filename, plot_orig=plot_orig_filename,
                            plot_modified=plot_modified_filename)
 
