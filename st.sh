@@ -6,4 +6,9 @@ python3 etst.py
 sleep 5
 echo $APP_PID
 kill -TERM $APP_PID
+
+if [ $EXIT_CODE -ne 0 ]; then
+ echo "Error occurred: Exit code $EXIT_CODE"
+fi
+
 exit 0
