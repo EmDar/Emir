@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB limit for uploaded files
 UPLOAD_FOLDER = './uploads'  # папка для загруженных файлов
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-RECAPTCHA_SITE_KEY = '6LczEEAmAAAAAEj8HXeUpeIOZMW3f8ev_94hwnRP'
+RECAPTCHA_SITE_KEY = '6Le0-T8mAAAAAA9mngaXEmUBPeX7uJQxdQ4LrFum'
 
 def change_brightness(image, brightness, selected_channels):
     # Convert the image to numpy array
@@ -85,7 +85,7 @@ def brightness():
     if not recaptcha_response:
         abort(400, 'reCAPTCHA verification failed')
     payload = {
-        'secret': '6LczEEAmAAAAAOLMhHRXPb7teGZoWRoWBsrbufyL',
+        'secret': '6Le0-T8mAAAAAD-szrwap70ZmrcOQ2ORqc7VJYCH',
         'response': recaptcha_response
     }
     response = requests.post('https://www.google.com/recaptcha/api/siteverify', payload).json()
