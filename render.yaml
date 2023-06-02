@@ -6,4 +6,4 @@
     pipenv sync
 
 - name: Start tests
-  run: pipenv run python -m pytest etst.py
+  run: pipenv run python -m pytest st.py
