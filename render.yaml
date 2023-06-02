@@ -1,33 +1,9 @@
-- name: Test brightness endpoint
-  request:
-    url: http://localhost:5000/brightness
-    method: POST
-    headers:
-      Content-Type: multipart/form-data
-    body:
-      formData:
-        file:
-          value: '{{ file_content }}'
-          options:
-            filename: image.jpg
-            contentType: image/jpeg
-        brightness: '50'
-        red_checkbox: 'on'
-        green_checkbox: 'on'
-        blue_checkbox: 'on'
-        g-recaptcha-response: 'test-recaptcha-response'
-  response:
-    status: 200
-    headers:
-      Content-Type: text/html; charset=utf-8
-    body: '<html>...</html>'
+- name: Pipenvlock
+  run: pipenv lock
 
-- name: Test index endpoint
-  request:
-    url: http://localhost:5000/
-    method: GET
-  response:
-    status: 200
-    headers:
-      Content-Type: text/html; charset=utf-8
-    body: '<html>...</html>'
+- name: Pipenvsync
+  run: |
+    pipenv sync
+
+- name: Start tests
+  run: pipenv run python -m pytest etst.py
