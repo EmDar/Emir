@@ -116,11 +116,11 @@ def brightness():
     modified_colors = get_color_distribution(modified_image)
 
     # Save the modified image to a file
-    orig_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'rig.png')
+    orig_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'orig.png')
     orig_image.save(orig_filename)
 
     modified_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'modified.png')
-    modified_image.save(dified_filename)
+    modified_image.save(modified_filename)
 
     # Create the color distribution plot for the original image
     plot_orig_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'plot_orig.png')
